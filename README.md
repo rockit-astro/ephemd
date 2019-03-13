@@ -7,14 +7,14 @@ Part of the observatory software for the Warwick La Palma telescopes.
 See [Software Infrastructure](https://github.com/warwick-one-metre/docs/wiki/Software-Infrastructure) for an overview of the W1m software architecture and instructions for developing and deploying the code.
 
 ### Software setup
-After installing `observatory-ephem-server`, the `ephemed` must be enabled using:
+After installing `observatory-ephem-server`, the `ephemd` must be enabled using:
 ```
-sudo systemctl enable ephemed.service
+sudo systemctl enable ephemd.service
 ```
 
 The service will automatically start on system boot, or you can start it immediately using:
 ```
-sudo systemctl start ephemed.service
+sudo systemctl start ephemd.service
 ```
 
 Finally, open a port in the firewall so that other machines on the network can access the daemon:
