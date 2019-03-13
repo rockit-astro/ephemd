@@ -72,7 +72,7 @@ class EphemerisDaemon:
             'date': now_date.strftime('%Y-%m-%dT%H:%M:%SZ'),
             'sun_alt': sun.alt.value,
             'moon_alt': moon.alt.value,
-            'moon_illumination': moon_illumination(sun, moon)
+            'moon_percent_illumination': round(100 * moon_illumination(sun, moon), 1)
         }
 
 
