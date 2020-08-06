@@ -6,7 +6,7 @@ Summary:   Exposes the current sun and moon positions for Warwick La Palma teles
 License:   GPL-3.0
 Group:     Unspecified
 BuildArch: noarch
-Requires:  python36, python36-Pyro4, python36-warwick-observatory-common, python36-astropy, python36-numpy
+Requires:  python3, python3-Pyro4, python3-warwick-observatory-common, python3-astropy, python3-numpy
 Requires:  observatory-log-client, %{?systemd_requires}
 
 %description
