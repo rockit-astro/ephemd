@@ -13,32 +13,18 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with tngd.  If not, see <http://www.gnu.org/licenses/>.
+# along with ephemd.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Exposes the current sun and moon positions for Warwick La Palma telescopes environment daemon"""
+"""Exposes the current sun and moon positions for Warwick telescopes environment daemon"""
 
-import datetime
-
-from astropy.coordinates import (
-    get_sun,
-    get_moon,
-    EarthLocation,
-    AltAz
-)
-
+import argparse
+from astropy.coordinates import get_sun, get_moon, EarthLocation, AltAz
 from astropy.time import Time
 from astropy import units as u
 import numpy as np
 import Pyro4
-from warwick.observatory.common import daemons
+from warwick.observatory.ephemeris import Config
 
-
-# Measured from GPS receiver
-SITE_LATITUDE = 28.7603135
-SITE_LONGITUDE = -17.8796168
-SITE_ELEVATION = 2387
-
-# pylint: disable=too-few-public-methods
 
 def moon_illumination(sun_coord, moon_coord):
     """Calculate the moon illumination as a fraction between 0 and 1"""
@@ -50,11 +36,11 @@ def moon_illumination(sun_coord, moon_coord):
 
 class EphemerisDaemon:
     """Wraps a web request to the TNG weather feed"""
-    def __init__(self):
+    def __init__(self, config):
         # pylint: disable=no-member
-        self._lapalma = EarthLocation(lat=SITE_LATITUDE*u.deg,
-                                      lon=SITE_LONGITUDE*u.deg,
-                                      height=SITE_ELEVATION*u.m)
+        self._location = EarthLocation(lat=config.latitude*u.deg,
+                                       lon=config.longitude*u.deg,
+                                       height=config.altitude*u.m)
         # pylint: enable=no-member
 
     @Pyro4.expose
@@ -62,14 +48,13 @@ class EphemerisDaemon:
         """Query the latest valid measurement.
         May return None if no data is available"""
 
-        now_date = datetime.datetime.utcnow()
-        now_time = Time(now_date, format='datetime', scale='utc')
-        frame = AltAz(obstime=now_time, location=self._lapalma)
-        sun = get_sun(now_time).transform_to(frame)
-        moon = get_moon(now_time).transform_to(frame)
+        now = Time.now()
+        frame = AltAz(obstime=now, location=self._location)
+        sun = get_sun(now).transform_to(frame)
+        moon = get_moon(now).transform_to(frame)
 
         return {
-            'date': now_date.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'date': now.strftime('%Y-%m-%dT%H:%M:%SZ'),
             'sun_alt': sun.alt.value,
             'moon_alt': moon.alt.value,
             'moon_percent_illumination': round(100 * moon_illumination(sun, moon), 1)
@@ -77,4 +62,8 @@ class EphemerisDaemon:
 
 
 if __name__ == '__main__':
-    daemons.observatory_ephemeris.launch(EphemerisDaemon())
+    parser = argparse.ArgumentParser(description='Environment Server')
+    parser.add_argument('config', help='Path to configuration json file')
+    args = parser.parse_args()
+    c = Config(args.config)
+    c.daemon.launch(EphemerisDaemon(c))
