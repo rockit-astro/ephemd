@@ -1,5 +1,5 @@
 [Unit]
-Description=Exposes the current sun and moon positions for Warwick La Palma telescopes environment daemon.
+Description=Exposes the current sun and moon positions for environment daemon.
 After=syslog.target
 Wants=network-online.target
 After=network-online.target
