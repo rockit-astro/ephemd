@@ -20,6 +20,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/ephemd
 
 %{__install} %{_sourcedir}/lapalma.json %{buildroot}%{_sysconfdir}/ephemd
 %{__install} %{_sourcedir}/warwick.json %{buildroot}%{_sysconfdir}/ephemd
+%{__install} %{_sourcedir}/ngts.json %{buildroot}%{_sysconfdir}/ephemd
 
 %package server
 Summary:  Ephemeris server
@@ -51,5 +52,14 @@ Group:   Unspecified
 %files data-warwick
 %defattr(0644,root,root,-)
 %{_sysconfdir}/ephemd/warwick.json
+
+%package data-ngts
+Summary: Ephemeris data for NGTS
+Group:   Unspecified
+%description data-ngts
+
+%files data-ngts
+%defattr(0644,root,root,-)
+%{_sysconfdir}/ephemd/ngts.json
 
 %changelog
