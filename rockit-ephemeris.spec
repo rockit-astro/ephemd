@@ -1,6 +1,6 @@
 Name:      rockit-ephemeris
 Version:   %{_version}
-Release:   1
+Release:   1%{dist}
 Summary:   Exposes the current sun and moon positions for the environment daemon
 Url:       https://github.com/rockit-astro/ephemd
 License:   GPL-3.0
