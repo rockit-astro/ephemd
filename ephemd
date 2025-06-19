@@ -19,7 +19,7 @@
 
 import argparse
 import json
-from astropy.coordinates import get_sun, get_moon, EarthLocation, AltAz
+from astropy.coordinates import get_body, EarthLocation, AltAz
 from astropy.time import Time
 from astropy import units as u
 import numpy as np
@@ -96,8 +96,8 @@ class EphemerisDaemon:
 
         now = Time.now()
         frame = AltAz(obstime=now, location=self._location)
-        sun = get_sun(now).transform_to(frame)
-        moon = get_moon(now).transform_to(frame)
+        sun = get_body('sun', now).transform_to(frame)
+        moon = get_body('moon', now).transform_to(frame)
 
         return {
             'date': now.strftime('%Y-%m-%dT%H:%M:%SZ'),
